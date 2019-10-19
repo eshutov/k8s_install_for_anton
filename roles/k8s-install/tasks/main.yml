@@ -1,0 +1,57 @@
+---
+- name: Install requirments
+  apt:
+    name:
+      - python-apt
+      - apt-transport-https
+      - ca-certificates 
+      - software-properties-common
+      - curl
+      - gnupg2
+    update_cache: True
+
+- name: Add docker keys 
+  apt_key:
+    keyserver: https://download.docker.com/linux/debian/gpg
+    id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+
+- name: Add docker repository
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/debian buster stable
+    filename: docker 
+
+- name: Add k8s keys
+  apt_key:
+    keyserver: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    id: 54A647F9048D5688D7DA2ABE6A030B21BA07F4FB 
+
+- name: Add repository
+  apt_repository:
+    repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+    filename: kubernetes
+
+- name: Install docker
+  apt:
+    name:
+      - "docker-ce{{ '=' + docker_version if docker_version }}"
+      - "docker-ce-cli{{ '=' + docker_version if docker_version }}"
+      - containerd.io
+
+- name: Copy docker config
+  copy:
+    src: daemon.json
+    dest: /etc/docker/daemon.json
+  register: docker_config
+
+- name: Docker reload
+  systemd:
+    name: docker
+    daemon_reload: yes
+    state: reloaded
+  when: docker_config.changed
+
+- name: Install k8s
+  apt:
+    name: "{{ k8s_packets }}"
+    update_cache: True
+

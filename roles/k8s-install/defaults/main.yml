@@ -1,0 +1,7 @@
+---
+k8s_packets:
+  - kubelet
+  - kubeadm
+  - kubectl
+docker_version: 5:18.09.9~3-0~debian-buster
+

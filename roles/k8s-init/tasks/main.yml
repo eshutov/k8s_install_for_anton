@@ -1,0 +1,4 @@
+---
+- name: Kubeadm init
+  command: kubeadm init --pod-network-cidr="{{ pod_network_cidr }}"
+
