@@ -1,4 +1,22 @@
 ---
 - name: Kubeadm init
   command: kubeadm init --pod-network-cidr="{{ pod_network_cidr }}"
+  register: result
+
+- name: Init output
+  debug:
+    msg: "{{ result.stdout_lines }}"
+
+- name: Create conf path
+  file:
+    path: ~/.kube
+    state: directory
+
+- name: Copy confs
+  copy:
+    src: /etc/kubernetes/admin.conf
+    dest: ~/.kube/config
+    remote_src: True
+    owner: root
+    group: root
 

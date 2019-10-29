@@ -1,0 +1,29 @@
+---
+# name: Install pip requirements
+# pip:
+#   name:
+#     - kubernetes
+#     - openshift
+#     - PyYAML
+
+- name: Download calico.yml
+  get_url:
+    url: "https://docs.projectcalico.org/v{{ calico_version }}/manifests/calico.yaml"
+    dest: /root/calico.yml
+    force: True
+
+- name: Set PODs CIDR
+  replace:
+    path: /root/calico.yml
+    after: '- name: CALICO_IPV4POOL_CIDR'
+    regexp: '([ \t]*value:) "\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/\d{1,2}"'
+    replace: '\1 "{{ pod_network_cidr }}"'
+
+# name: Install calico.yml
+# k8s:
+#   state: present
+#   src: /root/calico.yml
+
+- name: Install calico.yml
+  command: kubectl apply -f /root/calico.yml
+

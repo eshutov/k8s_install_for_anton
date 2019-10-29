@@ -3,5 +3,8 @@
   become: True
 
   roles:
+  - { role: hostname }
   - { role: k8s-install }
-  - { role: k8s-init }
+  - { role: k8s-init, when: inventory_hostname in groups.masters }
+  - { role: calico, when: inventory_hostname in groups.masters }
+
