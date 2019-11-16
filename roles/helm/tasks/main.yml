@@ -1,0 +1,29 @@
+---
+# name: Download Helm
+# get_url:
+#   url: "https://get.helm.sh/helm-v{{ helm_version }}-linux-amd64.tar.gz"
+#   dest: /root/helm.tar.gz
+#   force: True
+
+- name: Create tmp dir
+  file:
+    path: /root/helm
+    state: directory
+
+- name: Extract Helm
+  unarchive:
+    src: "https://get.helm.sh/helm-v{{ helm_version }}-linux-amd64.tar.gz"
+    remote_src: yes
+    dest: /root/helm
+
+- name: Copy Helm
+  copy:
+    src: /root/helm/linux-amd64/helm
+    dest: /usr/local/bin/
+    remote_src: True
+    mode: '0755'
+
+- name: Delete tmp dir
+  file:
+    path: /root/helm/
+    state: absent
