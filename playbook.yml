@@ -4,6 +4,7 @@
 
   roles:
   - { role: hostname }
+  - { role: update }
   - { role: k8s-install }
   - { role: k8s-init, when: inventory_hostname in groups.masters }
   - { role: calico, when: inventory_hostname in groups.masters }

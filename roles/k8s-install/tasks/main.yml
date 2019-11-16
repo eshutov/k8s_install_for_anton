@@ -10,6 +10,7 @@
       - gnupg2
       - python-pip
       - python3-pip
+      - nfs-common
     update_cache: True
 
 - name: Add docker keys
@@ -35,8 +36,8 @@
 - name: Install docker
   apt:
     name:
-      - "docker-ce{{ '=' + docker_version if docker_version }}"
-      - "docker-ce-cli{{ '=' + docker_version if docker_version }}"
+      - "docker-ce{{ '=' + docker_version if docker_version else '' }}"
+      - "docker-ce-cli{{ '=' + docker_version if docker_version else '' }}"
       - containerd.io
 
 - name: Copy docker config

@@ -1,11 +1,12 @@
 [masters]
-master1        ansible_host=192.168.122.175
+k8s-master        ansible_host=192.168.1.232
 
 [masters:vars]
 ansible_ssh_private_key_file='~/.ssh/docker_id_rsa'
 
 [slaves]
-slave1         ansible_host=192.168.122.120
+k8s-slave-1        ansible_host=192.168.1.233
+k8s-slave-2        ansible_host=192.168.1.123
 
 [slaves:vars]
 ansible_ssh_private_key_file='~/.ssh/docker_id_rsa'
