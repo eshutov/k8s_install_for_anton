@@ -4,8 +4,9 @@
     upgrade: safe
     update_cache: True
   register: rg
+  when: first_run | d(False) | bool
 
-- name: Reboot a slow machine that might have lots of updates to apply
+- name: Reboot
   reboot:
     reboot_timeout: 60
-  when: rg.changed
+  when: first_run | d(False) | bool and rg.changed

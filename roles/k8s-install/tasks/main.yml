@@ -20,7 +20,8 @@
 
 - name: Add docker repository
   apt_repository:
-    repo: deb [arch=amd64] https://download.docker.com/linux/debian buster stable
+#   repo: deb [arch=amd64] https://download.docker.com/linux/debian buster stable
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable
     filename: docker
 
 - name: Add k8s keys
