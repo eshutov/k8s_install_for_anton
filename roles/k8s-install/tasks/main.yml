@@ -34,11 +34,20 @@
     repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
     filename: kubernetes
 
+- name: Check if pkgs are installed
+  package_facts:
+
 - name: Install docker
   apt:
     name:
       - "docker-ce{{ '=' + docker_version if docker_version else '' }}"
       - "docker-ce-cli{{ '=' + docker_version if docker_version else '' }}"
+      - containerd.io
+  when: (docker_pkgs | difference(ansible_facts.packages)) | length
+  vars:
+    docker_pkgs:
+      - docker-ce
+      - docker-ce-cli
       - containerd.io
 
 - name: Copy docker config
