@@ -1,5 +1,5 @@
 ---
-- name: Install requirments
+- name: Install requirements
   apt:
     name:
       - python-apt
@@ -10,8 +10,21 @@
       - gnupg2
       - python-pip
       - python3-pip
-      - nfs-common
+      - nfs-common  # actully not required, just for my stand
+      - iptables
+      - arptables
+      - ebtables
     update_cache: True
+  register: requirements
+
+# name: Switch to legacy versions
+# command: "{{ item }}"
+# with_items:
+#   - update-alternatives --set iptables /usr/sbin/iptables-legacy
+#   - update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
+#   - update-alternatives --set arptables /usr/sbin/arptables-legacy
+#   - update-alternatives --set ebtables /usr/sbin/ebtables-legacy
+# when: requirements.changed
 
 - name: Add docker keys
   apt_key:
@@ -20,7 +33,6 @@
 
 - name: Add docker repository
   apt_repository:
-#   repo: deb [arch=amd64] https://download.docker.com/linux/debian buster stable
     repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable
     filename: docker
 
@@ -34,21 +46,22 @@
     repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
     filename: kubernetes
 
-- name: Check if pkgs are installed
-  package_facts:
+# name: Check if pkgs are installed
+# package_facts:
 
 - name: Install docker
   apt:
     name:
       - "docker-ce{{ '=' + docker_version if docker_version else '' }}"
       - "docker-ce-cli{{ '=' + docker_version if docker_version else '' }}"
-      - containerd.io
-  when: (docker_pkgs | difference(ansible_facts.packages)) | length
-  vars:
-    docker_pkgs:
-      - docker-ce
-      - docker-ce-cli
-      - containerd.io
+      - "containerd.io{{ '=' + containerd_version if containerd_version else '' }}"
+    update_cache: True
+# when: (docker_pkgs | difference(ansible_facts.packages)) | length
+# vars:
+#   docker_pkgs:
+#     - docker-ce
+#     - docker-ce-cli
+#     - containerd.io
 
 - name: Copy docker config
   copy:
@@ -67,4 +80,16 @@
   apt:
     name: "{{ k8s_packets }}"
     update_cache: True
+
+- name: Hold packages
+  dpkg_selections:
+    name: "{{ item }}"
+    selection: hold
+  with_items:
+  - kubelet
+  - kubeadm
+  - kubectl
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
 

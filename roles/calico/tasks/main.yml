@@ -8,7 +8,7 @@
 
 - name: Download calico.yml
   get_url:
-    url: "https://docs.projectcalico.org/v{{ calico_version }}/manifests/calico.yaml"
+    url: "https://docs.projectcalico.org/manifests/calico.yaml"
     dest: /root/calico.yml
     force: True
 
