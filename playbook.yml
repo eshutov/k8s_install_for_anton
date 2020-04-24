@@ -10,5 +10,6 @@
                       first_run | bool == True, tags: ["init"] }
   - { role: calico, when: inventory_hostname in groups.masters and
                       first_run | bool == True, tags: ["calico"] }
-# - { role: helm, when: inventory_hostname in groups.masters, tags: ["helm"] }
+  - { role: helm, when: inventory_hostname in groups.masters and
+                      first_run | bool == True, tags: ["helm"] }
 
