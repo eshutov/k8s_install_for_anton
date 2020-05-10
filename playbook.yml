@@ -4,12 +4,12 @@
 
   roles:
   - { role: hostname }
-# - { role: update }
+  - { role: update, when: first_run | d(False) | bool == True }
   - { role: k8s-install }
   - { role: k8s-init, when: inventory_hostname in groups.masters and
-                      first_run | bool == True, tags: ["init"] }
+                      first_run | d(False) | bool == True, tags: ["init"] }
   - { role: calico, when: inventory_hostname in groups.masters and
-                      first_run | bool == True, tags: ["calico"] }
+                      first_run | d(False) | bool == True, tags: ["calico"] }
   - { role: helm, when: inventory_hostname in groups.masters and
-                      first_run | bool == True, tags: ["helm"] }
+                      first_run | d(False) | bool == True, tags: ["helm"] }
 
